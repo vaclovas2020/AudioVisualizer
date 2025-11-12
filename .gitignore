@@ -39,3 +39,5 @@
 
 # debug information files
 *.dwo
+/.vs/AudioVisualizer/FileContentIndex
+/.vs/AudioVisualizer/v17
