@@ -19,7 +19,19 @@ UninstPage instfiles
 ;--------------------------------
 Function .onInit
     SetRegView 64
+    ; Try to read previous install directory
     ReadRegStr $INSTDIR HKLM "Software\AudioVisualizer" "Install_Dir"
+    ; If registry key not found, set default
+    StrCmp $INSTDIR "" 0 +3
+        StrCpy $INSTDIR "$PROGRAMFILES64\AudioVisualizer"
+        Goto done
+
+    ; Optional: Check version if registry stored one
+    ReadRegStr $0 HKLM "Software\AudioVisualizer" "Version"
+    StrCmp $0 "" done
+    MessageBox MB_ICONINFORMATION|MB_OK "Previous version detected: $0`nInstall directory will be set to previous path."
+
+done:
 FunctionEnd
 
 ;--------------------------------
@@ -42,6 +54,7 @@ Section "Install"
 
     ; Write uninstall info
     WriteRegStr HKLM "Software\AudioVisualizer" "Install_Dir" "$INSTDIR"
+    WriteRegStr HKLM "Software\AudioVisualizer" "Version" "1.0.0" ; adjust version
     WriteUninstaller "$INSTDIR\uninstall.exe"
 
 SectionEnd
