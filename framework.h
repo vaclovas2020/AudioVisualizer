@@ -13,3 +13,10 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+#include <mmdeviceapi.h>
+#include <audioclient.h>
+#include <avrt.h>
+#include <vector>
+#include <thread>
+#include <atomic>
+#pragma comment(lib, "avrt.lib")
