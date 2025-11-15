@@ -4,10 +4,11 @@
 
 Name "AudioVisualizer"
 OutFile "AudioVisualizerSetup.exe"
-InstallDir "$PROGRAMFILES\AudioVisualizer"
+InstallDir "$PROGRAMFILES64\AudioVisualizer"   ; <- 64-bit Program Files
 RequestExecutionLevel admin
 
 ; Store install dir in registry so the uninstaller knows
+SetRegView 64  ; Use 64-bit registry view
 InstallDirRegKey HKLM "Software\AudioVisualizer" "Install_Dir"
 
 ;--------------------------------
@@ -55,6 +56,7 @@ Section "Uninstall"
     RMDir "$INSTDIR"
 
     ; Remove registry entries
+    SetRegView 64
     DeleteRegKey HKLM "Software\AudioVisualizer"
 
 SectionEnd
