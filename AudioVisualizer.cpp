@@ -124,7 +124,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
        IMMDeviceEnumerator* pEnum = nullptr;
        IMMDevice* pDevice = nullptr;
 
-       CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL,
+       HRESULT instanceResult = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL,
            CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&pEnum);
 
        // Use microphone:
