@@ -24,6 +24,7 @@ std::vector<float> g_audioBuffer;   // raw PCM samples
 CRITICAL_SECTION g_cs;              // protects g_audioBuffer
 
 HBRUSH hBrushBackground;
+HBITMAP hBmp;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -109,7 +110,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW_MY_STYLE,
-      CW_USEDEFAULT, 0, 1280, 800, nullptr, nullptr, hInstance, nullptr);
+      CW_USEDEFAULT, 0, 1280, 720, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -233,63 +234,113 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
-    case WM_PAINT:
+    case WM_CREATE:
         {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-
-            // ==== AUDIO VISUALIZATION START ====
-
-            RECT rc;
-            GetClientRect(hWnd, &rc);
-
-            EnterCriticalSection(&g_cs);
-            std::vector<float> copy = g_audioBuffer;
-            LeaveCriticalSection(&g_cs);
-
-            // Create brush (fill) and pen (border)
-            HBRUSH hBrush = CreateSolidBrush(RGB(103, 254, 77));
-            HPEN hPen = CreatePen(PS_SOLID, 1, RGB(76, 103, 254));
-
-            // Select them into the DC
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
-            HPEN oldPen = (HPEN)SelectObject(hdc, hPen);
-
-            if (!copy.empty()) {
-                // Draw simple bars: take N sample chunks and compute RMS
-                const int bars = 64;
-                int width = (rc.right - rc.left) / bars;
-                int samplesPerBar = (int)copy.size() / bars;
-
-                for (int i = 0; i < bars; i++) {
-                    float sum = 0;
-                    for (int j = 0; j < samplesPerBar; j++) {
-                        float v = copy[i * samplesPerBar + j];
-                        sum += v * v;
-                    }
-                    float rms = sqrt(sum / samplesPerBar);
-                    int barHeight = (int)(rms * 800);
-
-                    Rectangle(hdc,
-                        i * width,
-                        rc.bottom - barHeight,
-                        i * width + width - 2,
-                        rc.bottom);
-                }
-            }
-
-            // Restore original objects
-            SelectObject(hdc, oldBrush);
-            SelectObject(hdc, oldPen);
-
-            // Delete GDI objects
-            DeleteObject(hBrush);
-            DeleteObject(hPen);
-
-            // ==== AUDIO VISUALIZATION END ====
-
-            EndPaint(hWnd, &ps);
+            hBmp = (HBITMAP)LoadImage(
+                ((LPCREATESTRUCT)lParam)->hInstance,
+                MAKEINTRESOURCE(IDB_BITMAP1),
+                IMAGE_BITMAP,
+                0, 0,
+                LR_CREATEDIBSECTION
+            );
         }
+        break;
+    case WM_ERASEBKGND:
+        return TRUE;
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hWnd, &ps);
+
+        RECT rc;
+        GetClientRect(hWnd, &rc);
+
+        //
+        // === DOUBLE BUFFER SETUP ===
+        //
+        HDC backDC = CreateCompatibleDC(hdc);
+        HBITMAP backBmp = CreateCompatibleBitmap(hdc, rc.right, rc.bottom);
+        HBITMAP oldBackBmp = (HBITMAP)SelectObject(backDC, backBmp);
+
+        //
+        // === DRAW BACKGROUND BITMAP INTO backDC ===
+        //
+        HDC memDC = CreateCompatibleDC(hdc);
+        SelectObject(memDC, hBmp);
+
+        BITMAP bm{};
+        GetObject(hBmp, sizeof(bm), &bm);
+
+        // Draw bitmap at its original size
+        BitBlt(backDC,
+            0, 0,
+            bm.bmWidth, bm.bmHeight,
+            memDC,
+            0, 0,
+            SRCCOPY);
+
+        DeleteDC(memDC);
+
+        //
+        // === DRAW AUDIO BARS INTO backDC ===
+        //
+        EnterCriticalSection(&g_cs);
+        std::vector<float> copy = g_audioBuffer;
+        LeaveCriticalSection(&g_cs);
+
+        HBRUSH hBrush = CreateSolidBrush(RGB(103, 254, 77));
+        HPEN hPen = CreatePen(PS_SOLID, 1, RGB(76, 103, 254));
+
+        HBRUSH oldBrush = (HBRUSH)SelectObject(backDC, hBrush);
+        HPEN oldPen = (HPEN)SelectObject(backDC, hPen);
+
+        if (!copy.empty())
+        {
+            const int bars = 64;
+            int width = (rc.right - rc.left) / bars;
+            int samplesPerBar = (int)copy.size() / bars;
+
+            for (int i = 0; i < bars; i++)
+            {
+                float sum = 0;
+                for (int j = 0; j < samplesPerBar; j++)
+                {
+                    float v = copy[i * samplesPerBar + j];
+                    sum += v * v;
+                }
+
+                float rms = sqrt(sum / samplesPerBar);
+                int barHeight = (int)(rms * 720);
+
+                Rectangle(backDC,
+                    i * width,
+                    rc.bottom - barHeight,
+                    i * width + width - 2,
+                    rc.bottom);
+            }
+        }
+
+        SelectObject(backDC, oldBrush);
+        SelectObject(backDC, oldPen);
+        DeleteObject(hBrush);
+        DeleteObject(hPen);
+
+        //
+        // === FINAL BLIT TO SCREEN ===
+        //
+        BitBlt(hdc, 0, 0, rc.right, rc.bottom, backDC, 0, 0, SRCCOPY);
+
+        //
+        // === CLEANUP ===
+        //
+        SelectObject(backDC, oldBackBmp);
+        DeleteObject(backBmp);
+        DeleteDC(backDC);
+
+        EndPaint(hWnd, &ps);
+    }
+    break;
+
         break;
     case WM_TIMER:
         RECT rc;
@@ -300,6 +351,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         g_running = false;
         DeleteCriticalSection(&g_cs);
         DeleteObject(hBrushBackground);
+        DeleteObject(hBmp);
         PostQuitMessage(0);
         break;
     default:
