@@ -2,7 +2,7 @@
 ; General Installer Settings
 ;--------------------------------
 Name "AudioVisualizer"
-OutFile "AudioVisualizerSetup.exe"
+OutFile "AudioVisualizerSetup_x64.exe"
 InstallDir "$PROGRAMFILES64\AudioVisualizer"
 RequestExecutionLevel admin
 
