@@ -260,7 +260,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         sum += v * v;
                     }
                     float rms = sqrt(sum / samplesPerBar);
-                    int barHeight = (int)(rms * 400);
+                    int barHeight = (int)(rms * 800);
 
                     Rectangle(hdc,
                         i * width,
