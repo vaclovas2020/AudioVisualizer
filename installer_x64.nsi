@@ -29,7 +29,7 @@ Function .onInit
     ; Optional: Check version if registry stored one
     ReadRegStr $0 HKLM "Software\AudioVisualizer" "Version"
     StrCmp $0 "" done
-    MessageBox MB_ICONINFORMATION|MB_OK "Previous version detected: $0`nInstall directory will be set to previous path."
+    MessageBox MB_ICONINFORMATION|MB_OK "Previous version detected: $0 Install directory will be set to previous path."
 
 done:
 FunctionEnd
