@@ -109,7 +109,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW_MY_STYLE,
-      CW_USEDEFAULT, 0, 1280, 720, nullptr, nullptr, hInstance, nullptr);
+      CW_USEDEFAULT, 0, 1280, 800, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -197,7 +197,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
-   SetTimer(hWnd, 1, 1, NULL);
+   SetTimer(hWnd, 1, 16, NULL);
 
    return TRUE;
 }
@@ -247,9 +247,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             std::vector<float> copy = g_audioBuffer;
             LeaveCriticalSection(&g_cs);
 
+            // Create brush (fill) and pen (border)
+            HBRUSH hBrush = CreateSolidBrush(RGB(103, 254, 77));
+            HPEN hPen = CreatePen(PS_SOLID, 1, RGB(76, 103, 254));
+
+            // Select them into the DC
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+            HPEN oldPen = (HPEN)SelectObject(hdc, hPen);
+
             if (!copy.empty()) {
                 // Draw simple bars: take N sample chunks and compute RMS
-                const int bars = 128;
+                const int bars = 64;
                 int width = (rc.right - rc.left) / bars;
                 int samplesPerBar = (int)copy.size() / bars;
 
@@ -269,6 +277,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         rc.bottom);
                 }
             }
+
+            // Restore original objects
+            SelectObject(hdc, oldBrush);
+            SelectObject(hdc, oldPen);
+
+            // Delete GDI objects
+            DeleteObject(hBrush);
+            DeleteObject(hPen);
 
             // ==== AUDIO VISUALIZATION END ====
 
