@@ -1,86 +1,137 @@
 ;--------------------------------
-; General Installer Settings
+; Modern UI 2
 ;--------------------------------
-Name "AudioVisualizer"
-OutFile "AudioVisualizerSetup_x64.exe"
-InstallDir "$PROGRAMFILES64\AudioVisualizer"
+!include "MUI2.nsh"
+!include "FileFunc.nsh"
+
+Unicode true
 RequestExecutionLevel admin
 
 ;--------------------------------
-; Pages
+; App Information
 ;--------------------------------
-Page directory
-Page instfiles
-UninstPage uninstConfirm
-UninstPage instfiles
+!define APP_ID          "AudioVisualizer"     ; INTERNAL, no spaces
+!define APP_NAME        "Audio Visualizer"    ; DISPLAY name
+!define APP_VERSION     "1.0.1"
+!define COMPANY_NAME    "Vaclovas Lapinskis"
+!define PUBLISHER       "Vaclovas Lapinskis"
+!define APP_EXE         "AudioVisualizer.exe"
+
+!define INSTALL_DIR     "$PROGRAMFILES64\${APP_ID}"
+!define UNINSTALL_KEY   "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_ID}"
+
+Name "${APP_NAME}"
+OutFile "AudioVisualizerSetup_x64.exe"
+InstallDir "${INSTALL_DIR}"
+BrandingText "Copyright (c) Vaclovas Lapinskis 2025"
+
+; Setup icons
+Icon "small.ico"
+UninstallIcon "small.ico"
+
 
 ;--------------------------------
-; Init Function
+; Modern UI Pages
+;--------------------------------
+!insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_INSTFILES
+!insertmacro MUI_PAGE_FINISH
+
+!insertmacro MUI_UNPAGE_CONFIRM
+!insertmacro MUI_UNPAGE_INSTFILES
+
+!insertmacro MUI_LANGUAGE "English"
+
+
+;--------------------------------
+; Init
 ;--------------------------------
 Function .onInit
     SetRegView 64
-    ; Try to read previous install directory
-    ReadRegStr $INSTDIR HKLM "Software\AudioVisualizer" "Install_Dir"
-    ; If registry key not found, set default
-    StrCmp $INSTDIR "" 0 +3
-        StrCpy $INSTDIR "$PROGRAMFILES64\AudioVisualizer"
-        Goto done
-
-    ; Optional: Check version if registry stored one
-    ReadRegStr $0 HKLM "Software\AudioVisualizer" "Version"
-    StrCmp $0 "" done
-    MessageBox MB_ICONINFORMATION|MB_OK "Previous version detected: $0 Install directory will be set to previous path."
-
-done:
+    ReadRegStr $INSTDIR HKLM "Software\${APP_ID}" "Install_Dir"
+    StrCmp $INSTDIR "" 0 +2
+        StrCpy $INSTDIR "${INSTALL_DIR}"
 FunctionEnd
 
+
 ;--------------------------------
-; Installer Section
+; Install
 ;--------------------------------
 Section "Install"
 
     SetRegView 64
     SetOutPath "$INSTDIR"
 
-    ; Copy application files
-    File "x64\Release\AudioVisualizer.exe"
+    ; Files
+    File "x64\Release\${APP_EXE}"
 
-    ; Create Desktop shortcut
-    CreateShortcut "$DESKTOP\AudioVisualizer.lnk" "$INSTDIR\AudioVisualizer.exe"
+    ;--------------------------------
+    ; Desktop shortcut
+    ;--------------------------------
+    CreateShortcut "$DESKTOP\${APP_NAME}.lnk" \
+        "$INSTDIR\${APP_EXE}" "" "$INSTDIR\${APP_EXE}" 0
 
-    ; Create Start Menu folder and shortcut
-    CreateDirectory "$SMPROGRAMS\AudioVisualizer"
-    CreateShortcut "$SMPROGRAMS\AudioVisualizer\AudioVisualizer.lnk" "$INSTDIR\AudioVisualizer.exe"
+    ;--------------------------------
+    ; Start Menu shortcut
+    ;--------------------------------
+    CreateDirectory "$SMPROGRAMS\${APP_NAME}"
 
-    ; Write uninstall info
-    WriteRegStr HKLM "Software\AudioVisualizer" "Install_Dir" "$INSTDIR"
-    WriteRegStr HKLM "Software\AudioVisualizer" "Version" "1.0.0" ; adjust version
+    CreateShortcut "$SMPROGRAMS\${APP_NAME}\${APP_NAME}.lnk" \
+        "$INSTDIR\${APP_EXE}" "" "$INSTDIR\${APP_EXE}" 0
+
+
+    ;--------------------------------
+    ; Internal registry
+    ;--------------------------------
+    WriteRegStr HKLM "Software\${APP_ID}" "Install_Dir" "$INSTDIR"
+    WriteRegStr HKLM "Software\${APP_ID}" "Version" "${APP_VERSION}"
+
+    ; Uninstaller
     WriteUninstaller "$INSTDIR\uninstall.exe"
+
+
+    ;--------------------------------
+    ; Windows Apps & Features (Add/Remove Programs)
+    ;--------------------------------
+    WriteRegStr HKLM "${UNINSTALL_KEY}" "DisplayName"     "${APP_NAME}"
+    WriteRegStr HKLM "${UNINSTALL_KEY}" "DisplayVersion"  "${APP_VERSION}"
+    WriteRegStr HKLM "${UNINSTALL_KEY}" "Publisher"       "${PUBLISHER}"
+    WriteRegStr HKLM "${UNINSTALL_KEY}" "InstallLocation" "$INSTDIR"
+    WriteRegStr HKLM "${UNINSTALL_KEY}" "UninstallString" "$INSTDIR\uninstall.exe"
+    WriteRegStr HKLM "${UNINSTALL_KEY}" "DisplayIcon"     "$INSTDIR\${APP_EXE}"
+    WriteRegDWORD HKLM "${UNINSTALL_KEY}" "NoModify" 1
+    WriteRegDWORD HKLM "${UNINSTALL_KEY}" "NoRepair" 1
+
+    ; Estimated Size
+    ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
+    WriteRegDWORD HKLM "${UNINSTALL_KEY}" "EstimatedSize" $0
 
 SectionEnd
 
+
+
 ;--------------------------------
-; Uninstaller Section
+; Uninstall
 ;--------------------------------
 Section "Uninstall"
 
     SetRegView 64
 
-    ; Remove installed files
-    Delete "$INSTDIR\AudioVisualizer.exe"
-    Delete "$DESKTOP\AudioVisualizer.lnk"
+    ; Shortcuts
+    Delete "$DESKTOP\${APP_NAME}.lnk"
+    Delete "$SMPROGRAMS\${APP_NAME}\${APP_NAME}.lnk"
+    RMDir "$SMPROGRAMS\${APP_NAME}"
 
-    ; Remove Start Menu shortcut and folder
-    Delete "$SMPROGRAMS\AudioVisualizer\AudioVisualizer.lnk"
-    RMDir "$SMPROGRAMS\AudioVisualizer"
-
-    ; Remove uninstaller
+    ; Files
+    Delete "$INSTDIR\${APP_EXE}"
     Delete "$INSTDIR\uninstall.exe"
 
-    ; Remove installation directory
+    ; Directory
     RMDir /r "$INSTDIR"
 
-    ; Remove registry entries
-    DeleteRegKey HKLM "Software\AudioVisualizer"
+    ; Registry
+    DeleteRegKey HKLM "Software\${APP_ID}"
+    DeleteRegKey HKLM "${UNINSTALL_KEY}"
 
 SectionEnd
