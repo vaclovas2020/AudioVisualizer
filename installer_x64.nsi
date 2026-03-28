@@ -12,7 +12,7 @@ RequestExecutionLevel admin
 ;--------------------------------
 !define APP_ID          "AudioVisualizer"     ; INTERNAL, no spaces
 !define APP_NAME        "Audio Visualizer"    ; DISPLAY name
-!define APP_VERSION     "1.0.1"
+!define APP_VERSION     "1.1.0"
 !define COMPANY_NAME    "Vaclovas Lapinskis"
 !define PUBLISHER       "Vaclovas Lapinskis"
 !define APP_EXE         "AudioVisualizer.exe"
@@ -23,7 +23,7 @@ RequestExecutionLevel admin
 Name "${APP_NAME}"
 OutFile "AudioVisualizerSetup_x64.exe"
 InstallDir "${INSTALL_DIR}"
-BrandingText "Copyright (c) Vaclovas Lapinskis 2025"
+BrandingText "Copyright (c) Vaclovas Lapinskis 2026"
 
 ; Setup icons
 Icon "small.ico"
