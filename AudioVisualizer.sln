@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Screenshot.png = Screenshot.png
 	EndProjectSection
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "AudioVisualizerSetup", "AudioVisualizerSetup\AudioVisualizerSetup.vdproj", "{AA8F73AF-29C6-7230-14CC-FCD7372FFD21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -28,6 +30,10 @@ Global
 		{967F6EBE-2968-41CC-BFA1-3A2C7274F109}.Release|x64.Build.0 = Release|x64
 		{967F6EBE-2968-41CC-BFA1-3A2C7274F109}.Release|x86.ActiveCfg = Release|Win32
 		{967F6EBE-2968-41CC-BFA1-3A2C7274F109}.Release|x86.Build.0 = Release|Win32
+		{AA8F73AF-29C6-7230-14CC-FCD7372FFD21}.Debug|x64.ActiveCfg = Debug
+		{AA8F73AF-29C6-7230-14CC-FCD7372FFD21}.Debug|x86.ActiveCfg = Debug
+		{AA8F73AF-29C6-7230-14CC-FCD7372FFD21}.Release|x64.ActiveCfg = Release
+		{AA8F73AF-29C6-7230-14CC-FCD7372FFD21}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
