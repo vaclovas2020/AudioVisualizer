@@ -12,7 +12,7 @@ RequestExecutionLevel admin
 ;--------------------------------
 !define APP_ID          "AudioVisualizer"     ; INTERNAL, no spaces
 !define APP_NAME        "Audio Visualizer"    ; DISPLAY name
-!define APP_VERSION     "1.1.0"
+!define APP_VERSION     "1.1.1"
 !define COMPANY_NAME    "Vaclovas Lapinskis"
 !define PUBLISHER       "Vaclovas Lapinskis"
 !define APP_EXE         "AudioVisualizer.exe"
@@ -21,7 +21,7 @@ RequestExecutionLevel admin
 !define UNINSTALL_KEY   "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_ID}"
 
 Name "${APP_NAME}"
-OutFile "AudioVisualizerSetup_x64.exe"
+OutFile "AudioVisualizerSetup_1.1.1_x64.exe"
 InstallDir "${INSTALL_DIR}"
 BrandingText "Copyright (c) Vaclovas Lapinskis 2026"
 
@@ -65,12 +65,6 @@ Section "Install"
 
     ; Files
     File "x64\Release\${APP_EXE}"
-
-    ;--------------------------------
-    ; Desktop shortcut
-    ;--------------------------------
-    CreateShortcut "$DESKTOP\${APP_NAME}.lnk" \
-        "$INSTDIR\${APP_EXE}" "" "$INSTDIR\${APP_EXE}" 0
 
     ;--------------------------------
     ; Start Menu shortcut
@@ -119,7 +113,6 @@ Section "Uninstall"
     SetRegView 64
 
     ; Shortcuts
-    Delete "$DESKTOP\${APP_NAME}.lnk"
     Delete "$SMPROGRAMS\${APP_NAME}\${APP_NAME}.lnk"
     RMDir "$SMPROGRAMS\${APP_NAME}"
 
