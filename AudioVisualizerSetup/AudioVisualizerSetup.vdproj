@@ -44,6 +44,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
         "Release"
@@ -68,6 +76,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
     }
@@ -177,15 +193,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Audio Visualizer"
-        "ProductCode" = "8:{E0FE78B1-B817-4177-A95C-B9DABCA6070B}"
-        "PackageCode" = "8:{6FE1F4E5-0239-4674-BDBD-5A7CD2DCF21E}"
+        "ProductCode" = "8:{C81407CA-722D-41BC-91F9-7F933DF29C37}"
+        "PackageCode" = "8:{E1EFA5EF-D0C0-49F2-8AF0-BE800FA3D3BD}"
         "UpgradeCode" = "8:{EE258105-C7EA-4D19-8EC9-61699F910AC8}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.1.2"
+        "ProductVersion" = "8:1.1.3"
         "Manufacturer" = "8:Vaclovas Lapinskis"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://vaclovas.dev/"
