@@ -12,7 +12,7 @@ RequestExecutionLevel admin
 ;--------------------------------
 !define APP_ID          "AudioVisualizer"     ; INTERNAL, no spaces
 !define APP_NAME        "Audio Visualizer"    ; DISPLAY name
-!define APP_VERSION     "1.1.1"
+!define APP_VERSION     "1.1.2"
 !define COMPANY_NAME    "Vaclovas Lapinskis"
 !define PUBLISHER       "Vaclovas Lapinskis"
 !define APP_EXE         "AudioVisualizer.exe"
@@ -20,8 +20,8 @@ RequestExecutionLevel admin
 !define INSTALL_DIR     "$PROGRAMFILES64\${APP_ID}"
 !define UNINSTALL_KEY   "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_ID}"
 
-Name "${APP_NAME}"
-OutFile "AudioVisualizerSetup_1.1.1_x64.exe"
+Name "${APP_NAME} ${APP_VERSION}"
+OutFile "AudioVisualizerSetup_${APP_VERSION}_x64.exe"
 InstallDir "${INSTALL_DIR}"
 BrandingText "Copyright (c) Vaclovas Lapinskis 2026"
 
