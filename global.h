@@ -9,6 +9,12 @@
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
+#define MAX_LOADSTRING 100
+
+// Global Variables
+extern WCHAR szTitle[MAX_LOADSTRING];
+extern WCHAR szWindowClass[MAX_LOADSTRING];
+
 extern HINSTANCE hInst;
 
 extern std::atomic<bool> g_running;

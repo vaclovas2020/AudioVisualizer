@@ -1,5 +1,9 @@
 #include "global.h"
 
+// Global Variables
+WCHAR szTitle[MAX_LOADSTRING];
+WCHAR szWindowClass[MAX_LOADSTRING];
+
 HINSTANCE hInst;
 
 std::atomic<bool> g_running = true;
