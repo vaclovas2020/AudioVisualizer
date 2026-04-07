@@ -128,12 +128,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AudioVisualizer.h" />
+    <ClInclude Include="AudioVIsualizerRender.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="global.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioVisualizer.cpp" />
+    <ClCompile Include="AudioVisualizerRender.cpp" />
+    <ClCompile Include="global.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AudioVisualizer.rc" />
