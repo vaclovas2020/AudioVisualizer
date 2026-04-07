@@ -1,3 +1,4 @@
+#pragma once
 #include "global.h"
 
 // Vertex structure
@@ -7,8 +8,11 @@ struct Vertex {
     float u, v;         // UV (for background)
 };
 
-bool InitDirectX(HWND hWnd);
-bool CreateShaders();
-bool CreateBackgroundTexture(HWND hWnd);
-void Render(HWND hWnd);
-void CleanupDirectX();
+class AudioVisualizerRender {
+    public:
+        bool InitDirectX(HWND hWnd);
+        bool CreateShaders();
+        bool CreateBackgroundTexture(HWND hWnd);
+        void Render(HWND hWnd);
+        void CleanupDirectX();
+};

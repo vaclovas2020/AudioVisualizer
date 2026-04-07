@@ -1,8 +1,10 @@
+#pragma once
 #include "AudioVIsualizerRender.h"
 #include "resource.h"
+#include "global.h"
 
 // Initialize DirectX 11 device, swap chain, shaders and background
-bool InitDirectX(HWND hWnd)
+bool AudioVisualizerRender::InitDirectX(HWND hWnd)
 {
     RECT rc;
     GetClientRect(hWnd, &rc);
@@ -58,7 +60,7 @@ bool InitDirectX(HWND hWnd)
 }
 
 // Compile shaders from embedded strings
-bool CreateShaders()
+bool AudioVisualizerRender::CreateShaders()
 {
     const char* vsCode = R"(
     struct VS_INPUT {
@@ -121,7 +123,7 @@ bool CreateShaders()
 }
 
 // Load background bitmap resource and convert to DX11 texture
-bool CreateBackgroundTexture(HWND hWnd)
+bool AudioVisualizerRender::CreateBackgroundTexture(HWND hWnd)
 {
     // Load the bitmap resource (IDB_BITMAP1)
     hBmp = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP1), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
@@ -172,7 +174,7 @@ bool CreateBackgroundTexture(HWND hWnd)
     return true;
 }
 
-void Render(HWND hWnd)
+void AudioVisualizerRender::Render(HWND hWnd)
 {
     if (!g_pContext || !g_pRenderTargetView || !g_pContext.Get()) return;
 
@@ -297,7 +299,7 @@ void Render(HWND hWnd)
     g_pSwapChain->Present(1, 0);   // VSync enabled
 }
 
-void CleanupDirectX()
+void AudioVisualizerRender::CleanupDirectX()
 {
     // ComPtr will automatically release
     g_pRenderTargetView.Reset();
