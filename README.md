@@ -4,4 +4,4 @@ This is my hobby project to create audio visualization animation for Windows usi
 
 ![image](Screenshot.png)
 
-Version 1.1.6
+Version 1.1.7
